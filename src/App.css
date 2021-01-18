@@ -177,3 +177,36 @@ h2 {
   display: block;
   margin: auto;
 }
+
+.red {
+  color: rgb(116, 9, 9);
+}
+
+.greenbanner div, .bluebanner div {
+  text-align: center;
+  width: 50%;
+  margin: auto;
+  font-style: italic;
+}
+
+.greenbanner, .bluebanner {
+  padding: 15px;
+}
+
+.bluebanner {
+  background-color: skyblue;
+  border: 1px solid navy;
+}
+
+.bluebanner div {
+  color: navy;
+}
+
+.greenbanner {
+  background-color: palegreen;
+  border: 1px solid teal;
+}
+
+.greenbanner div {
+  color:teal
+}

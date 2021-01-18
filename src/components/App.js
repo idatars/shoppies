@@ -32,6 +32,14 @@ function Submit(props) {
   else return <div></div>;
 }
 
+function Status(props) {
+  if (props.curr !== 5) {
+    return <span>({props.curr}/5)</span>
+  } else {
+    return <span className='red'>({props.curr}/5)</span>
+  }
+}
+
 class ShortlistButton extends React.Component {
   constructor(props) {
     super(props);
@@ -95,6 +103,16 @@ class NominateButton extends React.Component {
   render() {
     return <button onClick={this.clickWrapper}>{this.state.value}</button>;
   }
+}
+
+function Banner(props) {
+  if (props.submitted) {
+    window.scrollTo(0, 0)
+    return <div className='greenbanner'><div>Thank you for submitting your favourite films!</div></div>;
+  } else if (props.nomlength === 5) {
+    window.scrollTo(0, 0)
+    return <div className='bluebanner'><div>You have reached the maximum amount of nominations! Submit your current list or remove some to add different ones.</div></div>
+  } else return <span></span>;
 }
 
 class App extends React.Component {
@@ -202,6 +220,8 @@ class App extends React.Component {
           </div>
         </header>
 
+        <Banner nomlength={this.state.nominations.length} submitted={this.state.submitted} />
+
         <div className="grid">
           <div id="searchresults">
             <Blurb value={this.state.blurb}/>
@@ -255,7 +275,7 @@ class App extends React.Component {
           </div>
 
           <div id="nominations">
-            <h2>My Nominations ({this.state.nominations.length}/5)</h2>
+            <h2>My Nominations <Status curr={this.state.nominations.length}/></h2>
             {this.state.nominations.length === 0 ? (
               <p>Nothing yet!</p>
             ) : (
