@@ -60,12 +60,20 @@ header {
   background-color: #ffffff;
   padding: 7px;
   border-radius: 10px;
+  display: inline-block;
+  width: 60%;
+  float: right;
+}
+
+img {
+  opacity: 50%;
 }
 
 #search input[type=text] {
   background-color: #fff;
   height: 20px;
   border: none;
+  font-size: large;
 }
 
 #search input:focus {

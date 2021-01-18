@@ -192,7 +192,9 @@ class App extends React.Component {
       <div>
         <header>
           <div id="head">
+            <span>
             <h1 className="logo">The Shoppies</h1>
+            </span>
             <Search
               value={this.state.value}
               onChange={(e) => this.handleSearch(e)}
