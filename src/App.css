@@ -66,9 +66,9 @@ header {
   float: right;
 }
 
-img {
+/*img {
   opacity: 50%;
-}
+}*/
 
 #search input[type=text] {
   background-color: #fff;
