@@ -124,7 +124,7 @@ class App extends React.Component {
       this.setState({loading: false, searchResult: Array(0), blurb: event.target.value, errorMessage: null});
     } else {
       let fixedsearchvalue = event.target.value.replace(' ', '+');
-      fetch(`https://www.omdbapi.com/?s=${fixedsearchvalue}&type=movie&apikey=1c15bb9e&page=1`)
+      fetch(`https://www.omdbapi.com/?s=${fixedsearchvalue}&type=movie&apikey=1c15bb9e`)
       .then(response => response.json())
       .then(jsonResponse => {
         if (jsonResponse.Response === "True") {
