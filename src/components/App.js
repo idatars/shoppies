@@ -1,52 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
-import searchicon from './searchicon.svg';
+import {addMovie, removeMovie, member} from '../utilities';
+import {Search} from './ui';
 
 const MOVIE_API_URL = "https://www.omdbapi.com/?s=man&apikey=4a3b711b"; // you should replace this with yours
-
-// adds movie to lom if it is not already part of it. No effects if movie is not a valid movie
-function addMovie(lom, movie) {
-  if (movie && movie.imdbID) {
-    for (var i = 0; i < lom.length; i++) {
-      if (lom[i].imdbID === movie.imdbID) return 1;
-    }
-    lom.push(movie);
-    return 0;
-  }
-  return 1;
-}
-
-function removeMovie(lom, movie) {
-  if (movie && movie.imdbID) {
-    for (var i = 0; i < lom.length; i++) {
-      if (lom[i].imdbID === movie.imdbID) {
-        lom.splice(i, 1);
-        return 0;
-      }
-    }
-  }
-  return 1;
-}
-
-function member(lom, movie) {
-  if (movie && movie.imdbID) {
-    for (var i = 0; i < lom.length; i++) {
-      if (lom[i].imdbID === movie.imdbID) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-function Search(props) {
-  return (
-    <div id="search">
-      <span><img src={searchicon} alt="search icon" id="searchicon"></img></span>
-      <input type="text" value={props.value} onChange={props.onChange} />
-    </div>
-  )
-}
 
 function Movie(props) {
   return (
@@ -157,7 +114,6 @@ class App extends React.Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.shortlist = this.shortlist.bind(this);
     this.nominate = this.nominate.bind(this);
-    this.imdbIsEquals = this.imdbIdEquals.bind(this);
     this.submit = this.submit.bind(this);
   }
 
@@ -189,11 +145,7 @@ class App extends React.Component {
     this.setState({submitted: true});
   }
 
-  imdbIdEquals(x, y) {
-    if (x.imdbID && y.imdbID) return x.imdbID === y.imdbID;
-    return false;
-  }
-
+  
   shortlist(movie, value) {
     if (value === 1) {
       const shortlist = this.state.shortlist.slice();
@@ -204,9 +156,9 @@ class App extends React.Component {
         return 0;
       }
     } else if (value === -1) {
-      const shortlist = this.state.shortlist.slice();
-      if (removeMovie(shortlist, movie) === 0) {
-        this.setState({shortlist: shortlist});
+      let temp = this.state.shortlist.slice();
+      if (removeMovie(temp, movie) === 0) {
+        this.setState({shortlist: temp});
         return 0;
       }
     }
