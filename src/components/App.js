@@ -110,15 +110,10 @@ class App extends React.Component {
       blurb: '',
       submitted: false,
     }
-    this.handleChangeSearch = this.handleChangeSearch.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.shortlist = this.shortlist.bind(this);
     this.nominate = this.nominate.bind(this);
     this.submit = this.submit.bind(this);
-  }
-
-  handleChangeSearch(event) {
-    this.setState({searchValue: event.target.value});
   }
 
   handleSearch(event) {
@@ -128,7 +123,8 @@ class App extends React.Component {
     if (event.target.value === '') {
       this.setState({loading: false, searchResult: Array(0), blurb: event.target.value, errorMessage: null});
     } else {
-      fetch(`https://www.omdbapi.com/?s=${event.target.value}&apikey=4a3b711b`)
+      let fixedsearchvalue = event.target.value.replace(' ', '+');
+      fetch(`https://www.omdbapi.com/?s=${fixedsearchvalue}&type=movie&apikey=1c15bb9e&page=1`)
       .then(response => response.json())
       .then(jsonResponse => {
         if (jsonResponse.Response === "True") {
