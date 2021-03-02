@@ -272,7 +272,7 @@ class App extends React.Component {
             ) : (
               this.state.shortlist.map((movie, index) => (
                 <div className="block" key={index}>
-                  <p>{movie.Title} <i>({movie.Year})</i></p>
+                  <p className="title">{movie.Title} <i>({movie.Year})</i></p>
                   <div className="options">
                   <NominateButton movie={movie} onClick={this.nominate} shortlisted={true} nominated={false}/>
                     <ShortlistButton movie={movie} onClick={this.shortlist} shortlisted={true} nominated={false}/>
