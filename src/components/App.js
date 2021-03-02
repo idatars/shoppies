@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "../App.css";
 import {addMovie, removeMovie, member} from '../utilities';
 import {Search} from './ui';
-
-const MOVIE_API_URL = "https://www.omdbapi.com/?s=man&apikey=4a3b711b"; // you should replace this with yours
 
 function Movie(props) {
   return (
@@ -36,7 +34,7 @@ function Status(props) {
   if (props.curr !== 5) {
     return <span>({props.curr}/5)</span>
   } else {
-    return <span className='red'>({props.curr}/5)</span>
+    return <span className='redtext'>({props.curr}/5)</span>
   }
 }
 
@@ -45,35 +43,39 @@ class ShortlistButton extends React.Component {
     super(props);
     if (props.nominated) {
       this.state = {
-        value: 'Move to Shortlist'
+        value: '+ Shortlist',
+        color: 'green'
       }
     } else if (props.shortlisted) {
       this.state = {
-        value: 'Remove from Shortlist'
+        value: '- Shortlist',
+        color: 'red'
       }
     } else {
       this.state = {
-        value: 'Add to Shortlist'
+        value: '+ Shortlist',
+        color: 'green'
       }
     }
     this.clickWrapper = this.clickWrapper.bind(this);
   }
 
   clickWrapper() {
-    if (this.state.value === 'Add to Shortlist' || this.state.value === 'Move to Shortlist') {
+    if (this.state.value === '+ Shortlist' /*|| this.state.value === 'Move to Shortlist'*/) {
       if (this.props.onClick(this.props.movie, 1) === 0) {
-        this.setState({value: 'Remove from Shortlist'});
+        this.setState({value: '- Shortlist'});
+        this.setState({color: 'red'});
       }
-    } else if (this.state.value === 'Remove from Shortlist') {
+    } else if (this.state.value === '- Shortlist') {
       if (this.props.onClick(this.props.movie, -1) === 0) {
-        this.setState({value: 'Add to Shortlist'});
-        this.forceUpdate();
+        this.setState({value: '+ Shortlist'});
+        this.setState({color: 'green'});
       }
     }
   }
 
   render() {
-    return <button onClick={this.clickWrapper}>{this.state.value}</button>;
+    return <button onClick={this.clickWrapper} className={this.state.color}>{this.state.value}</button>;
   }
 }
 
@@ -82,26 +84,26 @@ class NominateButton extends React.Component {
     super(props);
     if (props.nominated) {
       this.state = {
-        value: 'Remove from Nominations'
+        value: '- Nominate', color: 'red'
       }
     } else {
       this.state = {
-        value: 'Nominate'
+        value: '+ Nominate', color: 'green'
       }
     }
     this.clickWrapper = this.clickWrapper.bind(this);
   }
 
   clickWrapper() {
-    if (this.state.value === 'Nominate') {
-      if (this.props.onClick(this.props.movie, 1) === 0) this.setState({value: 'Remove from Nominations'});
-    } else if (this.state.value === 'Remove from Nominations') {
-      if (this.props.onClick(this.props.movie, -1) === 0) this.setState({value: 'Nominate'});
+    if (this.state.value === '+ Nominate') {
+      if (this.props.onClick(this.props.movie, 1) === 0) this.setState({value: '- Nominate', color: 'red'});
+    } else if (this.state.value === '- Nominate') {
+      if (this.props.onClick(this.props.movie, -1) === 0) this.setState({value: '+ Nominate', color: 'green'});
     }
   }
 
   render() {
-    return <button onClick={this.clickWrapper}>{this.state.value}</button>;
+    return <button onClick={this.clickWrapper} className={this.state.color}>{this.state.value}</button>;
   }
 }
 
@@ -233,23 +235,29 @@ class App extends React.Component {
                 <div className="errorMessage">{this.state.errorMessage}</div>
               ) : this.state.searchResult.length > 0 ? (
                 <table>
+                  <thead>
                   <tr>
                     <th>Year</th>
                     <th>Title</th>
                     <th></th>
                   </tr>
+                  </thead>
+
+                  <tbody>
 
                   {this.state.searchResult.map((movie, index) => (
-                    <tr>
+                    <tr key={index}>
                       <td>{movie.Year}</td>
                       <td>{movie.Title}</td>
                       <td className="options">
-                        <ShortlistButton movie={movie} onClick={this.shortlist} shortlisted={member(this.state.shortlist, movie)} nominated={member(this.state.nominations, movie)}/>
+                        <ShortlistButton key={'s' + movie.imdbID + member(this.state.shortlist, movie) + member(this.state.nominations, movie)} movie={movie} onClick={this.shortlist} shortlisted={member(this.state.shortlist, movie)} nominated={member(this.state.nominations, movie)}/>
                         <br></br>
-                        <NominateButton movie={movie} onClick={this.nominate} nominated={member(this.state.nominations, movie)}/>
+                        <NominateButton key={'n' + movie.imdbID + member(this.state.shortlist, movie) + member(this.state.nominations, movie)} movie={movie} onClick={this.nominate} nominated={member(this.state.nominations, movie)}/>
                       </td>
                     </tr>
                   ))}
+
+                    </tbody>
                 </table>
               ) : (
                 <div></div>
@@ -263,11 +271,12 @@ class App extends React.Component {
               <p>Nothing yet!</p>
             ) : (
               this.state.shortlist.map((movie, index) => (
-                <div className="block">
+                <div className="block" key={index}>
                   <p>{movie.Title} <i>({movie.Year})</i></p>
                   <div className="options">
+                  <NominateButton movie={movie} onClick={this.nominate} shortlisted={true} nominated={false}/>
                     <ShortlistButton movie={movie} onClick={this.shortlist} shortlisted={true} nominated={false}/>
-                    <NominateButton movie={movie} onClick={this.nominate} shortlisted={true} nominated={false}/>
+                    
                   </div>
                 </div>
               ))
@@ -280,11 +289,12 @@ class App extends React.Component {
               <p>Nothing yet!</p>
             ) : (
               this.state.nominations.map((movie, index) => (
-                <div className="block">
+                <div className="block" key={index}>
                   <Movie key={`${index}-${movie.Title}`} movie={movie}/>
                   <div className="options">
+                  <NominateButton movie={movie} onClick={this.nominate} shortlisted={false} nominated={true}/>
                     <ShortlistButton movie={movie} onClick={this.shortlist} shortlisted={false} nominated={true}/>
-                    <NominateButton movie={movie} onClick={this.nominate} shortlisted={false} nominated={true}/>
+                    
                   </div>
                 </div>
               ))
